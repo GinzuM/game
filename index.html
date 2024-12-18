@@ -111,6 +111,15 @@
       margin-top: 20px;
     }
 
+    #button-size-control {
+      margin-top: 20px;
+      display: none;
+    }
+
+    #button-size-control button {
+      margin: 0 5px;
+    }
+
     #return-to-menu-btn {
       background-color: #ff4500;
       margin-top: 10px;
@@ -170,6 +179,111 @@
       display: flex;
       flex-direction: column;
     }
+
+    #mobile-controls {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      display: none;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    #mobile-movement {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+    }
+
+    #mobile-rotation {
+      display: flex;
+      gap: 5px;
+    }
+
+    #mobile-controls button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.5);
+      color: #000;
+      border: 2px solid #000;
+      border-radius: 10px;
+      touch-action: manipulation;
+    }
+
+    #mobile-controls.small button {
+      width: 50px;
+      height: 50px;
+      font-size: 20px;
+    }
+
+    #mobile-controls.medium button {
+      width: 70px;
+      height: 70px;
+      font-size: 24px;
+    }
+
+    #mobile-controls.large button {
+      width: 90px;
+      height: 90px;
+      font-size: 28px;
+    }
+
+    #mobile-up {
+      grid-column: 2;
+    }
+
+    #mobile-left {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    #mobile-down {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    #mobile-right {
+      grid-column: 3;
+      grid-row: 2;
+    }
+
+    #mobile-run {
+      margin-left: 10px;
+    }
+
+    #mobile-controls.small #mobile-run {
+      width: 60px !important;
+      height: 60px !important;
+      font-size: 16px;
+    }
+
+    #mobile-controls.medium #mobile-run {
+      width: 80px !important;
+      height: 80px !important;
+      font-size: 20px;
+    }
+
+    #mobile-controls.large #mobile-run {
+      width: 100px !important;
+      height: 100px !important;
+      font-size: 24px;
+    }
+
+    #mobile-run.active {
+      background-color: rgba(255, 255, 0, 0.5);
+    }
+
+    #mobile-checkbox-container {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    #mobile-checkbox {
+      margin-right: 10px;
+    }
   </style>
 </head>
 
@@ -189,6 +303,10 @@
       <h1>Labirinto 3D</h1>
       <button id="start-btn">Iniciar</button>
       <button id="test-mode-btn">Modo de Teste</button>
+      <div id="mobile-checkbox-container">
+        <input type="checkbox" id="mobile-checkbox">
+        <label for="mobile-checkbox">Modo MOBILE</label>
+      </div>
     </div>
     <div id="game-controls">
       <button id="pause-btn" style="display: none;">Pausar</button>
@@ -210,6 +328,24 @@
           <button id="resume-btn-overlay">Despausar</button>
           <button id="return-to-menu-btn">Retornar ao Menu</button>
         </div>
+        <div id="button-size-control">
+          <button id="small-size-btn">Pequeno</button>
+          <button id="medium-size-btn">Médio</button>
+          <button id="large-size-btn">Grande</button>
+        </div>
+      </div>
+    </div>
+    <div id="mobile-controls">
+      <div id="mobile-movement">
+        <button id="mobile-up">W</button>
+        <button id="mobile-left">A</button>
+        <button id="mobile-down">S</button>
+        <button id="mobile-right">D</button>
+      </div>
+      <button id="mobile-run">↑</button>
+      <div id="mobile-rotation">
+        <button id="mobile-rotate-left">←</button>
+        <button id="mobile-rotate-right">→</button>
       </div>
     </div>
   </div>
@@ -258,7 +394,9 @@
         testMode: false, // Indica se o jogo está no modo de teste
         testModeSize: 7, // Tamanho do mapa para o modo de teste (25% menor que o tamanho anterior)
         runningSpeedMultiplier: 1.15, // Multiplicador de velocidade ao correr (15% mais rápido)
-        isRunning: false // Indica se o jogador está correndo
+        isRunning: false, // Indica se o jogador está correndo
+        isMobileMode: false, // Indica se o modo mobile está ativado
+        mobileButtonSize: 'small' // Tamanho dos botões no modo mobile
       };
       const gameContainer = document.getElementById('game-container');
       const player = document.getElementById('player');
@@ -272,6 +410,8 @@
       const ctx = canvas.getContext('2d');
       canvas.width = 800;
       canvas.height = 600;
+      const mobileControls = document.getElementById('mobile-controls');
+      const mobileCheckbox = document.getElementById('mobile-checkbox');
       let gameLoop;
       let playerX = 1.5;
       let playerY = 1.5;
@@ -575,6 +715,9 @@
         if (isTestMode) {
           console.log("Modo de teste ativado");
         }
+        if (GG_ALL_GAME_CONFIG.isMobileMode) {
+          mobileControls.style.display = 'flex';
+        }
         gameLoop = setInterval(() => {
           updatePlayerMovement();
           castRays();
@@ -593,6 +736,11 @@
         if (resumeBtn) resumeBtn.style.display = 'none';
         const pauseOverlay = document.getElementById('pause-overlay');
         if (pauseOverlay) pauseOverlay.style.display = 'flex';
+        // Show button size control if in mobile mode
+        const buttonSizeControl = document.getElementById('button-size-control');
+        if (buttonSizeControl) {
+          buttonSizeControl.style.display = GG_ALL_GAME_CONFIG.isMobileMode ? 'block' : 'none';
+        }
       }
 
       function resumeGame() {
@@ -630,8 +778,30 @@
         if (startScreen) startScreen.style.display = 'flex';
         if (pauseBtn) pauseBtn.style.display = 'none';
         if (resumeBtn) resumeBtn.style.display = 'none';
+        mobileControls.style.display = 'none';
         // Resetar as configurações do modo de teste
         GG_ALL_GAME_CONFIG.testMode = false;
+      }
+
+      function toggleMobileMode() {
+        GG_ALL_GAME_CONFIG.isMobileMode = mobileCheckbox.checked;
+        if (gameActive) {
+          mobileControls.style.display = GG_ALL_GAME_CONFIG.isMobileMode ? 'flex' : 'none';
+        }
+        updateMobileButtonSize();
+      }
+
+      function updateMobileButtonSize() {
+        const mobileControls = document.getElementById('mobile-controls');
+        if (mobileControls) {
+          mobileControls.classList.remove('small', 'medium', 'large');
+          mobileControls.classList.add(GG_ALL_GAME_CONFIG.mobileButtonSize);
+        }
+      }
+
+      function setMobileButtonSize(size) {
+        GG_ALL_GAME_CONFIG.mobileButtonSize = size;
+        updateMobileButtonSize();
       }
       if (startBtn) startBtn.addEventListener('click', () => startGame(false));
       if (testModeBtn) testModeBtn.addEventListener('click', startTestMode);
@@ -644,6 +814,52 @@
       if (resumeBtnOverlay) resumeBtnOverlay.addEventListener('click', resumeGame);
       const returnToMenuBtn = document.getElementById('return-to-menu-btn');
       if (returnToMenuBtn) returnToMenuBtn.addEventListener('click', returnToMenu);
+      mobileCheckbox.addEventListener('change', toggleMobileMode);
+      // Adicionar event listeners para os botões de tamanho dos controles móveis
+      const smallSizeBtn = document.getElementById('small-size-btn');
+      const mediumSizeBtn = document.getElementById('medium-size-btn');
+      const largeSizeBtn = document.getElementById('large-size-btn');
+      if (smallSizeBtn) smallSizeBtn.addEventListener('click', () => setMobileButtonSize('small'));
+      if (mediumSizeBtn) mediumSizeBtn.addEventListener('click', () => setMobileButtonSize('medium'));
+      if (largeSizeBtn) largeSizeBtn.addEventListener('click', () => setMobileButtonSize('large'));
+      // Adicionar event listeners para os botões móveis
+      function simulateKeyEvent(key, type) {
+        const event = new KeyboardEvent(type, {
+          key: key,
+          bubbles: true,
+          cancelable: true,
+        });
+        document.dispatchEvent(event);
+      }
+
+      function addMobileButtonListeners(id, key) {
+        const button = document.getElementById(id);
+        button.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          simulateKeyEvent(key, 'keydown');
+        });
+        button.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          simulateKeyEvent(key, 'keyup');
+        });
+        button.addEventListener('mousedown', () => simulateKeyEvent(key, 'keydown'));
+        button.addEventListener('mouseup', () => simulateKeyEvent(key, 'keyup'));
+        button.addEventListener('mouseleave', () => simulateKeyEvent(key, 'keyup'));
+      }
+      addMobileButtonListeners('mobile-up', 'w');
+      addMobileButtonListeners('mobile-down', 's');
+      addMobileButtonListeners('mobile-left', 'a');
+      addMobileButtonListeners('mobile-right', 'd');
+      addMobileButtonListeners('mobile-rotate-left', 'ArrowLeft');
+      addMobileButtonListeners('mobile-rotate-right', 'ArrowRight');
+      // Adicionar listener para o botão de correr (agora um interruptor)
+      const mobileRunBtn = document.getElementById('mobile-run');
+      mobileRunBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        GG_ALL_GAME_CONFIG.isRunning = !GG_ALL_GAME_CONFIG.isRunning;
+        mobileRunBtn.classList.toggle('active', GG_ALL_GAME_CONFIG.isRunning);
+        keys['shift'] = GG_ALL_GAME_CONFIG.isRunning;
+      });
     })();
   </script>
 
