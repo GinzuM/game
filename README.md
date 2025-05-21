@@ -7,3 +7,7 @@ Aproveite.
 
 
 Versão do TXT sempre vai ser uma versão mais antiga e que está funcionando a versão em HTML pode ser alterada para implementar novas funcionalidades.
+
+
+link do jogo:
+https://ginzu-labirinto.vercel.app/
