@@ -1,0 +1,277 @@
+    @font-face {
+      font-family: "Press Start 2P";
+      src: url("https://storage.wildwest.gg/uploads/1730265476288_press_start_2p.woff2") format("woff2");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Press Start 2P", cursive;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #game-container {
+      width: 800px;
+      height: 600px;
+      border: 2px solid #f00;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #start-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"><rect width="800" height="300" fill="%2387CEEB"/><rect y="300" width="800" height="300" fill="%23228B22"/><polygon points="400,150 350,250 450,250" fill="%230000FF"/><rect x="375" y="250" width="50" height="50" fill="%230000FF"/></svg>');
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    #start-screen h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    #start-screen button {
+      font-size: 18px;
+      margin: 10px;
+      padding: 10px 20px;
+    }
+
+    #game-controls {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+
+    #pause-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    #controls-panel {
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    #controls-panel h2 {
+      margin-top: 0;
+      color: #000;
+    }
+
+    #controls-panel ul {
+      list-style-type: none;
+      padding: 0;
+      color: #000;
+      text-align: left;
+    }
+
+    #controls-panel li {
+      margin-bottom: 10px;
+    }
+
+    #pause-buttons {
+      margin-top: 20px;
+    }
+
+    #button-size-control {
+      margin-top: 20px;
+      display: none;
+    }
+
+    #button-size-control button {
+      margin: 0 5px;
+    }
+
+    #return-to-menu-btn {
+      background-color: #ff4500;
+      margin-top: 10px;
+    }
+
+    #raycaster {
+      width: 100%;
+      height: 100%;
+    }
+
+    #player {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #0f0;
+      border-radius: 50%;
+    }
+
+    #hud {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    #running-icon {
+      width: 20px;
+      height: 20px;
+      margin-top: 5px;
+      opacity: 0.5;
+      transition: opacity 0.3s;
+    }
+
+    #running-icon.active {
+      opacity: 1;
+    }
+
+    button {
+      border-radius: 4px;
+      background-color: #f00;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      font-family: "Press Start 2P", cursive;
+      font-size: 12px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    #game-controls {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #mobile-controls {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      display: none;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    #mobile-movement {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+    }
+
+    #mobile-rotation {
+      display: flex;
+      gap: 5px;
+    }
+
+    #mobile-controls button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.5);
+      color: #000;
+      border: 2px solid #000;
+      border-radius: 10px;
+      touch-action: manipulation;
+    }
+
+    #mobile-controls.small button {
+      width: 50px;
+      height: 50px;
+      font-size: 20px;
+    }
+
+    #mobile-controls.medium button {
+      width: 70px;
+      height: 70px;
+      font-size: 24px;
+    }
+
+    #mobile-controls.large button {
+      width: 90px;
+      height: 90px;
+      font-size: 28px;
+    }
+
+    #mobile-up {
+      grid-column: 2;
+    }
+
+    #mobile-left {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    #mobile-down {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    #mobile-right {
+      grid-column: 3;
+      grid-row: 2;
+    }
+
+    #mobile-run {
+      margin-left: 10px;
+    }
+
+    #mobile-controls.small #mobile-run {
+      width: 60px !important;
+      height: 60px !important;
+      font-size: 16px;
+    }
+
+    #mobile-controls.medium #mobile-run {
+      width: 80px !important;
+      height: 80px !important;
+      font-size: 20px;
+    }
+
+    #mobile-controls.large #mobile-run {
+      width: 100px !important;
+      height: 100px !important;
+      font-size: 24px;
+    }
+
+    #mobile-run.active {
+      background-color: rgba(255, 255, 0, 0.5);
+    }
+
+    #mobile-checkbox-container {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    #mobile-checkbox {
+      margin-right: 10px;
+    }
